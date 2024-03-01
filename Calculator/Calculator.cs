@@ -3,7 +3,7 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.FileIO;
 using Stack;
 
-namespace Alg;
+namespace CalculatorNamespace;
 
 class Calculator
 {
@@ -62,7 +62,7 @@ class Calculator
                 }
             case '/':
                 {
-                    if (number2 == 0)
+                    if (Math.Abs(number2) < 0.00000001)
                     {
                         return Tuple.Create(0.0, ErrorCode.DivisionByZero);
                     }
