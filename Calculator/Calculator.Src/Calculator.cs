@@ -62,7 +62,7 @@ public class Calculator
                 }
             case '/':
                 {
-                    if (Math.Abs(number2) < 0.0000001)
+                    if (Math.Abs(number2) < 0.00000001)
                     {
                         return Tuple.Create(0.0, ErrorCode.DivisionByZero);
                     }
