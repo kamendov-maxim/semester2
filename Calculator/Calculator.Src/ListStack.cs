@@ -1,7 +1,7 @@
 namespace Stack;
 
 
-class ListStack : IStack
+public class ListStack : IStack
 {
     public ListStack()
     {

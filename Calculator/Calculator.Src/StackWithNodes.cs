@@ -2,7 +2,7 @@ using System.Diagnostics;
 
 namespace Stack;
 
-class StackWithNodes : IStack
+public class StackWithNodes : IStack
 {
     private class Node
     {

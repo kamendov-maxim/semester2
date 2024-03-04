@@ -2,7 +2,7 @@ using Microsoft.VisualBasic;
 
 namespace Stack;
 
-interface IStack
+public interface IStack
 {
     void Add(double element);
 

@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Alg;
+using CalculatorNamespace;
 using Stack;
 
 class Program

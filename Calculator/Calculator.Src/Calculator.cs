@@ -3,9 +3,9 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.FileIO;
 using Stack;
 
-namespace Alg;
+namespace CalculatorNamespace;
 
-class Calculator
+public class Calculator
 {
     public static Tuple<double, ErrorCode> Evaluate(string expression, IStack stack)
     {
@@ -62,7 +62,7 @@ class Calculator
                 }
             case '/':
                 {
-                    if (number2 == 0)
+                    if (Math.Abs(number2) < 0.0000001)
                     {
                         return Tuple.Create(0.0, ErrorCode.DivisionByZero);
                     }
