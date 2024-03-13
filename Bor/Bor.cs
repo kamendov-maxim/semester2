@@ -1,11 +1,14 @@
 using System.Buffers.Binary;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
+using System.Globalization;
 using System.Linq.Expressions;
+using System.Net.Sockets;
 using System.Runtime.CompilerServices;
+using System.Xml;
 
 namespace Data_Structure;
-class Bor : IDataStructure
+public class Bor : IDataStructure
 {
     public Bor()
     {
@@ -18,53 +21,66 @@ class Bor : IDataStructure
         public Node()
         {
             this.Children = new Dictionary<char, Node>();
+            endOfWord = false;
         }
 
         public Dictionary<char, Node> Children;
-        public int WordCount;
+        public bool endOfWord;
     }
 
     public bool Add(string element)
     {
-        (bool exists, Node node, int charNumber) = FindNode(this.root, element, 0);
-        if (exists)
+        Node tempRoot = root;
+        int total = element.Length - 1;
+        bool answer = false;
+        for (int i = 0; i < element.Length; i++)
         {
-            return false;
-        }
+            // Node newTrie;
+            if (tempRoot.Children.Keys.Contains(element[i]))
+            {
+                tempRoot = tempRoot.Children[element[i]];
+            }
+            else
+            {
+                answer = true;
+                Node newTrie = new Node();
 
-        for (int i = charNumber; i < element.Length; ++i)
-        {
-            Node newNode = new Node();
-            node.Children.Add(element[i], newNode);
-            node = newNode;
-            ++this.Size;
-        }
-        ++globalWordCount;
-        node.WordCount = globalWordCount;
-        return true;
-    }
+                if (total == i)
+                {
+                    newTrie.endOfWord = true;
+                }
 
-    private static Tuple<bool, Node, int> FindNode(Node root, string element, int currentChar)
-    {
-        if (currentChar == element.Length)
-        {
-            return Tuple.Create(true, root, currentChar);
+                tempRoot.Children.Add(element[i], newTrie);
+                tempRoot = newTrie;
+            }
         }
-
-        if (root.Children.ContainsKey(element[currentChar]))
-        {
-            return FindNode(root.Children[element[currentChar]], element, ++currentChar);
-        }
-        else
-        {
-            return Tuple.Create(false, root, currentChar);
-        }
+        return answer;
     }
 
     public bool Contains(string element)
     {
-        (bool exists, Node node, int charNumber) = FindNode(root, element, 0);
-        return exists;
+        Node tempRoot = root;
+        int total = element.Length - 1;
+        for (int i = 0; i < element.Length; i++)
+        {
+            if (tempRoot.Children.Keys.Contains(element[i]))
+            {
+                tempRoot = tempRoot.Children[element[i]];
+
+                if (total == i)
+                {
+                    if (tempRoot.endOfWord == true)
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
     }
 
     public bool Remove(string element)
@@ -84,6 +100,10 @@ class Bor : IDataStructure
         if (root.Children.ContainsKey(element[charNumber]))
         {
             (wordWasHere, finish) = RemoveRecursion(root.Children[element[charNumber]], element, charNumber + 1);
+            if (wordWasHere && charNumber == element.Length - 1)
+            {
+                root.endOfWord = false;
+            }
         }
         else
         {
@@ -103,8 +123,35 @@ class Bor : IDataStructure
 
     public int HowManyStartsWithPrefix(string prefix)
     {
-        (bool exists, Node node, int charNumber) = FindNode(root, prefix, 0);
-        return exists ? node.Children.Count : 0;
+        Node tempNode = root;
+        int total = prefix.Length - 1;
+        for (int i = 0; i < prefix.Length; i++)
+        {
+            if (tempNode.Children.ContainsKey(prefix[i]))
+            {
+                tempNode = tempNode.Children[prefix[i]];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        return PrefixRecursion(tempNode);
+    }
+
+    private int PrefixRecursion(Node root)
+    {
+        int answer = 0;
+        var nodes = root.Children.Select(x => x.Value);
+        foreach (var node in nodes)
+        {
+            if (node.endOfWord)
+            {
+                ++answer;
+            }
+            answer += PrefixRecursion(node);
+        }
+        return answer;
     }
 
     public int Size;
