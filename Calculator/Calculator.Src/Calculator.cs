@@ -5,8 +5,17 @@ using Stack;
 
 namespace CalculatorNamespace;
 
+/// <summary>
+/// Класс, содержищий в себе метод для вычисления выражений, записанных в постфиксной записи
+/// </summary>
 public class Calculator
 {
+    /// <summary>
+    /// Метод для вычисления выражений, записанных в постфиксной записи
+    /// </summary>
+    /// <param name="expression">Выражение в постфиксной записи</param>
+    /// <param name="stack">Стек, реализующий интерфейс IStack. С помощью него калькулятор будет вычислять значение выражения </param>
+    /// <returns></returns>
     public static Tuple<double, ErrorCode> Evaluate(string expression, IStack stack)
     {
         if (expression == null)
@@ -79,7 +88,7 @@ public class Calculator
 
     private static void ClearStack(IStack stack)
     {
-        while (stack.Size > 0)
+        while (stack.Size() > 0)
         {
             stack.Pop();
         }

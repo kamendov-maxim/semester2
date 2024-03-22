@@ -2,6 +2,9 @@ using System.Diagnostics;
 
 namespace Stack;
 
+/// <summary>
+/// Реализация IStack с помощью встроенного класса Node
+/// </summary>
 public class StackWithNodes : IStack
 {
     private class Node
@@ -12,7 +15,12 @@ public class StackWithNodes : IStack
         }
 
         public double value;
-        public Node next;
+        public Node? next;
+    }
+
+    public StackWithNodes()
+    {
+        top = new Node();
     }
 
 
@@ -22,24 +30,29 @@ public class StackWithNodes : IStack
         newNode.next = this.top;
         newNode.value = element;
         this.top = newNode;
-        ++this.Size;
+        ++this.count;
     }
 
     public Tuple<double, bool> Pop()
     {
         double answer = -1.0;
         bool notEmpty = false;
-        if (this.Size > 0)
+        if (this.count > 0)
         {
             Node next = this.top.next;
             answer = this.top.value;
             this.top = next;
             notEmpty = true;
-            --this.Size;
+            --this.count;
         }
         return Tuple.Create(answer, notEmpty);
     }
 
-    public int Size { get; private set; }
-    private Node? top;
+    public int Size()
+    {
+        return this.count;
+    }
+
+    public int count { get; private set; }
+    private Node top;
 }

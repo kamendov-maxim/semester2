@@ -1,18 +1,19 @@
 namespace Stack;
 
 
+/// <summary>
+/// Реализация IStack с помощью списков
+/// </summary>
 public class ListStack : IStack
 {
     public ListStack()
     {
-        this.Size = 0;
         this.list = new List<double>();
     }
 
-    public void Add(double element)
+        public void Add(double element)
     {
         this.list.Add(element);
-        ++this.Size;
     }
 
     public Tuple<double, bool> Pop()
@@ -24,11 +25,14 @@ public class ListStack : IStack
             notEmpty = true;
             value = this.list[this.list.Count - 1];
             this.list.RemoveAt(this.list.Count - 1);
-            --this.Size;
         }
         return Tuple.Create(value, notEmpty);
     }
 
+    public int Size()
+    {
+        return list.Count;
+    }
+
     private List<double> list;
-    public int Size { get; private set; }
 }
