@@ -1,6 +1,9 @@
 using System.Text;
 namespace Routers;
 
+/// <summary>
+/// class for reading configuration from file and writing it to file
+/// </summary>
 internal class IO
 {
     public static RoutersGraph Read(string path)

@@ -4,10 +4,21 @@ using System.Runtime.InteropServices;
 
 namespace Routers;
 
+/// <summary>
+/// instrument for calculationg the best configuration of network
+/// </summary>
 public class Configurator
 {
     private static RoutersGraph? initialGraph;
     private static HashSet<int>? connectedVertices;
+
+    /// <summary>
+    /// Calculates best configuration based on configuration from input file and writes it to outputfile
+    /// </summary>
+    /// <param name="pathToInputFile">Path to input file</param>
+    /// <param name="pathToOutputFile">Path to outpput file</param>
+    /// <exception cref="ArgumentException">Thrown if path strings are null or empty</exception>
+    /// <exception cref="NetworkIsNotConnectedException">Thrown if network from input file is not connected</exception>
     public static void Configure(string pathToInputFile, string pathToOutputFile)
     {
         if (pathToInputFile == string.Empty || pathToInputFile == null || pathToOutputFile == string.Empty || pathToOutputFile == null)
