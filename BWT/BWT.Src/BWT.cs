@@ -8,9 +8,9 @@ namespace Burrows_Wheeler;
 
 public class BWT
 {
-        public static (string?, int) Transform(string input)
+    public static (string?, int) Transform(string? input)
     {
-        ArgumentNullException.ThrowIfNull(input);
+        ArgumentException.ThrowIfNullOrEmpty(input);
         var indexArray = new int[input.Length];
         int BWTPosition = 0;
 
@@ -39,9 +39,9 @@ public class BWT
     }
 
 
-    public static string? Revert(string input, int BWTPosition)
+    public static string? Revert(string? input, int BWTPosition)
     {
-        ArgumentNullException.ThrowIfNull(input);
+        ArgumentException.ThrowIfNullOrEmpty(input);
 
         var charArray = input.ToCharArray();
         var sortedBytes = new char[charArray.Length];
@@ -81,9 +81,16 @@ public class BWT
 
     private static int Compare(int a, int b, char[] input)
     {
-        int min = input.Length - (a > b ? a : b);
-        for (int i = 0; i < min; ++i)
+        for (int i = 0; i < input.Length; ++i)
         {
+            if (a + i >= input.Length)
+            {
+                a = i * -1;
+            }
+            if (b + i >= input.Length)
+            {
+                b = i * -1;
+            }
             if (input[a + i] < input[b + i])
             {
                 return -1;
@@ -93,24 +100,21 @@ public class BWT
                 return 1;
             }
         }
-        if (a > b)
-        {
-            return -1;
-        }
-        else if (a < b)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
+        return 0;
+    }
+
+    // private static int Compare(int a, int b, char[] input)
+    // {
+    //     int min = input.Length - (a > b ? a : b);
     //     for (int i = 0; i < min; ++i)
     //     {
-    //         int comparisonResult = input[a + i].CompareTo(input[b + i]);
-    //         if (comparisonResult != 0)
+    //         if (input[a + i] < input[b + i])
     //         {
-    //             return comparisonResult < 0 ? -1 : 1;
+    //             return -1;
+    //         }
+    //         else if (input[a + i] > input[b + i])
+    //         {
+    //             return 1;
     //         }
     //     }
     //     if (a > b)
@@ -125,5 +129,5 @@ public class BWT
     //     {
     //         return 0;
     //     }
-    }
+    // }
 }

@@ -5,7 +5,7 @@ using NuGet.Frameworks;
 public class Tests
 {
     [TestCase("banana", "nnbaaa", 3)]
-    [TestCase("vfvvffdv", "ffvvvvfd", 6)]
+    [TestCase("vfvvffdv", "ffvvvvfd", 5)]
     public void CheckIfTransformIsCorrect(string input, string expectedResult, int expectedBwtPosition)
     {
         (string? result, int BWTPosition) = BWT.Transform(input);
@@ -14,7 +14,7 @@ public class Tests
     }
 
     [TestCase("banana", "nnbaaa", 3)]
-    [TestCase("vfvvffdv", "ffvvvvfd", 6)]
+    [TestCase("vfvvffdv", "ffvvvvfd", 5)]
     public void CheckIfRevertIsCorrect(string expectedResult, string input, int BWTPosition)
     {
         string? result = BWT.Revert(input, BWTPosition);
