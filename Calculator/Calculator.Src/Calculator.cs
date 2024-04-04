@@ -18,7 +18,7 @@ public class Calculator
     /// <returns></returns>
     public static Tuple<double, ErrorCode> Evaluate(string expression, IStack stack)
     {
-        if (expression == null)
+        if (expression == null || expression == string.Empty)
         {
             return Tuple.Create(-1.0, ErrorCode.ExpressionIsNull);
         }
@@ -71,7 +71,7 @@ public class Calculator
                 }
             case '/':
                 {
-                    if (Math.Abs(number2) < 0.00000001)
+                    if (Math.Abs(number2) < double.Epsilon)
                     {
                         return Tuple.Create(0.0, ErrorCode.DivisionByZero);
                     }

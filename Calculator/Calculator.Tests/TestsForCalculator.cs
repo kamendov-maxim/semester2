@@ -1,160 +1,56 @@
 namespace Calculator.Tests;
 
 using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using CalculatorNamespace;
 using Stack;
 
 public class Tests
 {
-    public double epsilon = 0.00000001;
+    public static readonly string[] expressions = ["5 7 +", "5 -7 +", "5 0 +",
+    "5 25 *", "7 -15 *", "-10 -14 *", "-10 0 *", "6 0 /", "10 2 /", "-5 2 /",
+    "dfsgfvx", ""];
+    private static readonly double[] expectedAnswers = [12.0, -2.0, 5.0, 125.0, -105.0,
+    140.0, 0.0, -1, 5.0, -2.5, -1, -1];
+    private static readonly Calculator.ErrorCode[] expectedErrorCodes =
+    [Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.DivisionByZero,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.Ok,
+    Calculator.ErrorCode.WrongOperator,
+    Calculator.ErrorCode.ExpressionIsNull];
 
-    private static IEnumerable<IStack> stacks
+    private static IEnumerable<(string, double, Calculator.ErrorCode, IStack)> InputData
     {
         get
         {
-            yield return new ListStack();
-            yield return new StackWithNodes();
+            for (int i = 0; i < expressions.Length; ++i)
+            {
+                yield return new(expressions[i], expectedAnswers[i], expectedErrorCodes[i], new ListStack());
+                yield return new(expressions[i], expectedAnswers[i], expectedErrorCodes[i], new StackWithNodes());
+            }
         }
     }
 
-    [SetUp]
-    public void Setup()
+    [TestCaseSource(nameof(InputData))]
+    public void CalculationTest((string, double, Calculator.ErrorCode, IStack) inputData)
     {
-    }
-
-    [Test, TestCaseSource(nameof(stacks))]
-    public void PositivePlusPositiveEqualsPositive(IStack stack)
-    {
-        string expression = "5 7 +";
+        (var expression, var expectedAnswer, var errorCode, var stack) = inputData;
         (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
         Assert.Multiple(() =>
         {
-            Assert.That(answer, Is.EqualTo(12.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    [Test, TestCaseSource(nameof(stacks))]
-    public void PositivePLusNegativeEqualsNegative(IStack stack)
-    {
-        string expression = "5 -7 +";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(-2.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    [Test, TestCaseSource(nameof(stacks))]
-    public void SumWithZero(IStack stack)
-    {
-        string expression = "5 0 +";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(5.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    [Test, TestCaseSource(nameof(stacks))]
-    public void MultiplicationOfPositiveAndPositive(IStack stack)
-    {
-        string expression = "5 25 *";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(125.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    public void MultiplicationOfPositiveAndNegative(IStack stack)
-    {
-        string expression = "7 -15 *";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(-105.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    public void MultiplicationOfNegativeAndNegative(IStack stack)
-    {
-        string expression = "-10 -14 *";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(140.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-    public void MultiplicationWithZero(IStack stack)
-    {
-        string expression = "-10 0 *";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(0.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    public void DivisionByZero(IStack stack)
-    {
-        string expression = "6 0 /";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(-1.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.DivisionByZero));
-        });
-    }
-
-    public void DivizionOfPositiveAndPositive(IStack stack)
-    {
-        string expression = "10 2 /";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(5.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    public void DivizionOfPositiveAndNegative(IStack stack)
-    {
-        string expression = "-5 2 /";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(-2.5).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.Ok));
-        });
-    }
-
-    public void WrongInput(IStack stack)
-    {
-        string expression = "dfsgfvx";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(-1.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.WrongOperator));
-        });
-    }
-
-    public void EmptyString(IStack stack)
-    {
-        string expression = "";
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stack);
-        Assert.Multiple(() =>
-        {
-            Assert.That(answer, Is.EqualTo(-1.0).Within(epsilon));
-            Assert.That(ec, Is.EqualTo(Calculator.ErrorCode.ExpressionIsNull));
+            Assert.That(ec, Is.EqualTo(errorCode));
+            if (errorCode == Calculator.ErrorCode.Ok)
+            {
+                Assert.That(answer, Is.EqualTo(expectedAnswer).Within(double.Epsilon));
+            }
         });
     }
 }

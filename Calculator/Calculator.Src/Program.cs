@@ -9,9 +9,8 @@ class Program
     {
         Console.Write("Введите выражение: ");
         string? expression = Console.ReadLine();
-        ListStack listStack = new ListStack();
-        StackWithNodes stackWithNodes = new StackWithNodes();
-        (double answer, Calculator.ErrorCode ec) = Calculator.Evaluate(expression, stackWithNodes);
+        var listStack = new ListStack();
+        var stackWithNodes = new StackWithNodes();
         (double answer1, Calculator.ErrorCode ec1) = Calculator.Evaluate(expression, listStack);
         (double answer2, Calculator.ErrorCode ec2) = Calculator.Evaluate(expression, stackWithNodes);
         if (ec1 == Calculator.ErrorCode.Ok && ec2 == Calculator.ErrorCode.Ok)
@@ -28,7 +27,7 @@ class Program
         }
         else if (ec1 == Calculator.ErrorCode.ExpressionIsNull || ec2 == Calculator.ErrorCode.ExpressionIsNull)
         {
-            Console.WriteLine("Ошибка при вводе выражения");
+            Console.WriteLine("Выражение не может быть пустой строкой");
         }
     }
 }
