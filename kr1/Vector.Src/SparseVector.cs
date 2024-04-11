@@ -1,5 +1,8 @@
 namespace Vector;
 
+/// <summary>
+/// Implementation of SparseVector
+/// </summary>
 public class SparseVector
 {
     private readonly SortedDictionary<int, int> dictionary;
@@ -21,11 +24,19 @@ public class SparseVector
         }
     }
 
+    /// <summary>
+    /// Check if vector contains only zeros
+    /// </summary>
+    /// <returns>True if there are no other numbers than zeros</returns>
     public bool IsZeroVector()
     {
         return dictionary.Count == 0;
     }
 
+    /// <summary>
+    /// Convert SparseVector to int array
+    /// </summary>
+    /// <returns>Uncompressed array containing all the numbers from vector</returns>
     public int[] ToArray()
     {
         var array = new int[Length];
@@ -37,6 +48,12 @@ public class SparseVector
         return array;
     }
 
+    /// <summary>
+    /// Scalar multiplication on two vectors
+    /// </summary>
+    /// <param name="secondVector">Vector you want to multiply your vector with</param>
+    /// <returns>Result of scalat multiplication</returns>
+    /// <exception cref="DifferentLengthVectorsException">Thrown if lengths of vectors are different</exception>
     public int ScalarMultiplicationWith(SparseVector secondVector)
     {
         if (Length != secondVector.Length)
@@ -56,6 +73,11 @@ public class SparseVector
         return result;
     }
 
+    /// <summary>
+    /// Substract one vector from another
+    /// </summary>
+    /// <param name="secondVector">Vector you want to substract from your vector</param>
+    /// <exception cref="DifferentLengthVectorsException">Thrown if lengths of vectors are different</exception>
     public void Substract(SparseVector secondVector)
     {
         if (Length != secondVector.Length)
@@ -68,6 +90,11 @@ public class SparseVector
         }
     }
 
+    /// <summary>
+    /// Sum one vector from another
+    /// </summary>
+    /// <param name="secondVector">Vector you want to sum with your vector</param>
+    /// <exception cref="DifferentLengthVectorsException">Thrown if lengths of vectors are different</exception>
     public void Sum(SparseVector secondVector)
     {
         if (Length != secondVector.Length)
@@ -101,6 +128,11 @@ public class SparseVector
         }
     }
 
+    /// <summary>
+    /// GetNumber located at the given index in vector
+    /// </summary>
+    /// <param name="index">index</param>
+    /// <returns>Number at index</returns>
     public int GetNumberAtIndex(int index)
     {
         dictionary.TryGetValue(index, out int result);
