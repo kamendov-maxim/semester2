@@ -1,3 +1,4 @@
+// copyright file: https://github.com/kamendov-maxim/semester2/blob/master/LICENSE
 namespace Vector.Tests;
 
 using Vector;
