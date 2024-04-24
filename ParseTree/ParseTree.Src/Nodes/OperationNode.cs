@@ -24,7 +24,7 @@ internal class OperationNode : INode
     {
         if (LeftChild is not null && RightChild is not null)
         {
-            return $"( {operation} {LeftChild.ToString()} {RightChild.ToString()})";
+            return $"({operation} {LeftChild.ToString()} {RightChild.ToString()})";
         }
         throw new IncorrectTreeException();
     }

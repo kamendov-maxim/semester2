@@ -44,6 +44,7 @@ public class Tree
         if (currentChar == '(')
         {
             ++index;
+            SkipSpaces(expression, ref index);
             newNode = new OperationNode(expression[index]);
             ++index;
             newNode.LeftChild = Parse(expression, ref index);
