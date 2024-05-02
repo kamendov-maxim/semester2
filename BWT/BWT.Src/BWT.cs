@@ -6,8 +6,16 @@ using System.Threading.Tasks.Dataflow;
 
 namespace Burrows_Wheeler;
 
+/// <summary>
+/// Implementation of Burrows-Wheeler transform algorithm for strings
+/// </summary>
 public class BWT
 {
+    /// <summary>
+    /// Transform string
+    /// </summary>
+    /// <param name="input">Input to encode</param>
+    /// <returns>Tuple containing new string and index of original string in a table of cyclic permutation</returns>
     public static (string?, int) Transform(string? input)
     {
         ArgumentException.ThrowIfNullOrEmpty(input);
@@ -38,7 +46,13 @@ public class BWT
         return (new string(transformedArray), BWTPosition);
     }
 
-
+    /// <summary>
+    /// Decode encoded string
+    /// </summary>
+    /// <param name="input">String to decode</param>
+    /// <param name="BWTPosition">Position of original string in a table of cyclic permutations that
+    /// you got after transforming original string</param>
+    /// <returns>Decoded string</returns>
     public static string? Revert(string? input, int BWTPosition)
     {
         ArgumentException.ThrowIfNullOrEmpty(input);
@@ -102,32 +116,4 @@ public class BWT
         }
         return 0;
     }
-
-    // private static int Compare(int a, int b, char[] input)
-    // {
-    //     int min = input.Length - (a > b ? a : b);
-    //     for (int i = 0; i < min; ++i)
-    //     {
-    //         if (input[a + i] < input[b + i])
-    //         {
-    //             return -1;
-    //         }
-    //         else if (input[a + i] > input[b + i])
-    //         {
-    //             return 1;
-    //         }
-    //     }
-    //     if (a > b)
-    //     {
-    //         return -1;
-    //     }
-    //     else if (a < b)
-    //     {
-    //         return 1;
-    //     }
-    //     else
-    //     {
-    //         return 0;
-    //     }
-    // }
 }
