@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Dynamic;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
@@ -9,7 +10,7 @@ namespace Lists;
 /// <summary>
 /// An implementation of linked list
 /// </summary>
-public class List: IList
+public class List : IList
 {
     protected class ListElement
     {
@@ -35,13 +36,13 @@ public class List: IList
     /// </summary>
     /// <param name="index">Where to insert value</param>
     /// <param name="value">Value to insert</param>
-    /// <exception cref="OutOfRangeException">Exception is thrown if index is less than 0 or
+    /// <exception cref="IndexOutOfRangeException">Exception is thrown if index is less than 0 or
     /// bigger than list.Count and it is impossible to insert value</exception>
     public virtual void Insert(int index, int value)
     {
         if (index > Count || index < 0)
         {
-            throw new OutOfRangeException();
+            throw new IndexOutOfRangeException();
         }
 
         var newElement = new ListElement(value);
@@ -65,6 +66,12 @@ public class List: IList
         if (index == 0)
         {
             newElement = new ListElement(value);
+
+            if (head is null)
+            {
+                throw new InvalidOperationException("List does not work correctly");
+            }
+
             head.Previous = newElement;
             newElement.Next = head;
             head = newElement;
@@ -75,6 +82,10 @@ public class List: IList
         var currenElement = FindNode(index);
         newElement.Next = currenElement;
         newElement.Previous = currenElement.Previous;
+        if (currenElement.Previous is null)
+        {
+            throw new InvalidOperationException("List does not work correctly");
+        }
         currenElement.Previous.Next = newElement;
         currenElement.Previous = newElement;
         ++Count;
@@ -94,11 +105,21 @@ public class List: IList
         }
         else if (Count == 1)
         {
+
+            if (head is null)
+            {
+                throw new InvalidOperationException("List does not work correctly");
+            }
+
             head.Next = newElement;
             newElement.Previous = head;
         }
         else
         {
+            if (bottom is null)
+            {
+                throw new InvalidOperationException("List does not work correctly");
+            }
             bottom.Next = newElement;
             newElement.Previous = bottom;
         }
@@ -116,6 +137,10 @@ public class List: IList
         var currenElement = head;
         for (int i = 0; i < Count; ++i)
         {
+            if (currenElement is null)
+            {
+                throw new InvalidOperationException("List does not work correctly");
+            }
             output[i] = currenElement.Value;
             currenElement = currenElement.Next;
         }
@@ -128,12 +153,12 @@ public class List: IList
     /// </summary>
     /// <param name="index">Index of element to remove</param>
     /// <returns>Value of this element</returns>
-    /// <exception cref="OutOfRangeException">Thrown if there is no element with such index in the list</exception>
+    /// <exception cref="IndexOutOfRangeException">Thrown if there is no element with such index in the list</exception>
     public int RemoveAt(int index)
     {
         if (index > Count - 1 || index < 0 || Count == 0)
         {
-            throw new OutOfRangeException();
+            throw new IndexOutOfRangeException();
         }
 
         if (index == Count - 1)
@@ -145,14 +170,22 @@ public class List: IList
             }
             else
             {
+                if (bottom is null)
+                {
+                    throw new InvalidOperationException("List does not work correctly");
+                }
                 bottom = bottom.Previous;
             }
         }
 
         int value;
-        
+
         if (index == 0)
         {
+            if (head is null)
+            {
+                throw new InvalidOperationException("List does not work correctly");
+            }
             value = head.Value;
             head = head.Next;
             --Count;
@@ -161,6 +194,10 @@ public class List: IList
 
         var element = FindNode(index);
         value = element.Value;
+        if (element.Next is null || element.Previous is null)
+        {
+            throw new InvalidOperationException("List does not work correctly");
+        }
         element.Next.Previous = element.Previous;
         element.Previous.Next = element.Next;
         --Count;
@@ -172,12 +209,12 @@ public class List: IList
     /// </summary>
     /// <param name="index">Index of an element to find</param>
     /// <returns>Value of an element</returns>
-    /// <exception cref="OutOfRangeException">Thrown if there is no element with such index in the list</exception>
+    /// <exception cref="IndexOutOfRangeException">Thrown if there is no element with such index in the list</exception>
     public int FindValue(int index)
     {
         if (index > Count - 1 || index < 0)
         {
-            throw new OutOfRangeException("Index is out of range");
+            throw new IndexOutOfRangeException("Index is out of range");
         }
 
         var element = FindNode(index);
@@ -193,6 +230,10 @@ public class List: IList
             currenElement = head;
             for (int i = 0; i < index; ++i)
             {
+                if (currenElement is null)
+                {
+                    throw new InvalidOperationException("List does not work correctly");
+                }
                 currenElement = currenElement.Next;
             }
         }
@@ -201,14 +242,23 @@ public class List: IList
             currenElement = bottom;
             for (int i = Count - 1; i > index; --i)
             {
+                if (currenElement is null)
+                {
+                    throw new InvalidOperationException("List does not work correctly");
+                }
                 currenElement = currenElement.Previous;
             }
+        }
+
+        if (currenElement is null)
+        {
+            throw new InvalidOperationException("List does not work correctly");
         }
 
         return currenElement;
     }
 
-    public int Count {get; private set; }
+    public int Count { get; private set; }
     protected ListElement? head = null;
     protected ListElement? bottom = null;
 }

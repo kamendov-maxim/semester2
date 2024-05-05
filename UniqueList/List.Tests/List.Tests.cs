@@ -35,14 +35,14 @@ public class ListTests
     public void TestOutOfRangeCase()
     {
         var list = new List();
-        Assert.Throws<OutOfRangeException>(() => list.Insert(10, 6));
-        Assert.Throws<OutOfRangeException>(() => list.Insert(-10, 6));
+        Assert.Throws<IndexOutOfRangeException>(() => list.Insert(10, 6));
+        Assert.Throws<IndexOutOfRangeException>(() => list.Insert(-10, 6));
 
-        Assert.Throws<OutOfRangeException>(() => list.RemoveAt(10));
-        Assert.Throws<OutOfRangeException>(() => list.RemoveAt(-10));
+        Assert.Throws<IndexOutOfRangeException>(() => list.RemoveAt(10));
+        Assert.Throws<IndexOutOfRangeException>(() => list.RemoveAt(-10));
 
-        Assert.Throws<OutOfRangeException>(() => list.FindValue(10));
-        Assert.Throws<OutOfRangeException>(() => list.FindValue(-10));
+        Assert.Throws<IndexOutOfRangeException>(() => list.FindValue(10));
+        Assert.Throws<IndexOutOfRangeException>(() => list.FindValue(-10));
     }
 
     [Test]
