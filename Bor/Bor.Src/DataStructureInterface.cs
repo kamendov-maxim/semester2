@@ -1,4 +1,4 @@
-namespace Data_Structure;
+namespace Data_Structures;
 
 interface IDataStructure
 {

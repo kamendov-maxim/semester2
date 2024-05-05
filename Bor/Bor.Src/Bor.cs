@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Xml;
 
-namespace Data_Structure;
+namespace Data_Structures;
 public class Bor : IDataStructure
 {
     public Bor()
@@ -35,15 +35,19 @@ public class Bor : IDataStructure
         bool answer = false;
         for (int i = 0; i < element.Length; i++)
         {
-            // Node newTrie;
-            if (tempRoot.Children.Keys.Contains(element[i]))
+            if (tempRoot.Children.TryGetValue(element[i], out Node? value))
             {
-                tempRoot = tempRoot.Children[element[i]];
+                tempRoot = value;
+                if (!tempRoot.endOfWord && i == element.Length - 1)
+                {
+                    tempRoot.endOfWord = true;
+                    return true;
+                }
             }
             else
             {
                 answer = true;
-                Node newTrie = new Node();
+                var newTrie = new Node();
 
                 if (total == i)
                 {
@@ -63,9 +67,9 @@ public class Bor : IDataStructure
         int total = element.Length - 1;
         for (int i = 0; i < element.Length; i++)
         {
-            if (tempRoot.Children.Keys.Contains(element[i]))
+            if (tempRoot.Children.TryGetValue(element[i], out Node? value))
             {
-                tempRoot = tempRoot.Children[element[i]];
+                tempRoot = value;
 
                 if (total == i)
                 {
@@ -85,40 +89,41 @@ public class Bor : IDataStructure
 
     public bool Remove(string element)
     {
-        (bool wordWasHere, bool f) = RemoveRecursion(this.root, element, 0);
-        return wordWasHere;
-    }
-
-    private Tuple<bool, bool> RemoveRecursion(Node root, string element, int charNumber)
-    {
-        bool wordWasHere = false;
-        bool finish = false;
-        if (charNumber == element.Length)
+        Node? nodeFromWhereToDelete = null;
+        char startOfWordToDelete = default;
+        var previousNode = root;
+        int i = 0;
+        for (i = 0; i < element.Length; ++i)
         {
-            return Tuple.Create(true, root.Children.Count > 0);
-        }
-        if (root.Children.ContainsKey(element[charNumber]))
-        {
-            (wordWasHere, finish) = RemoveRecursion(root.Children[element[charNumber]], element, charNumber + 1);
-            if (wordWasHere && charNumber == element.Length - 1)
+            if (previousNode.Children.TryGetValue(element[i], out Node? currentNode))
             {
-                root.endOfWord = false;
+                if (i + 1 == element.Length && currentNode.endOfWord == true && currentNode.Children.Count > 0)
+                {
+                    currentNode.endOfWord = false;
+                    return true;
+                }
+                if (nodeFromWhereToDelete is null || currentNode.Children.Count > 1)
+                {
+                    nodeFromWhereToDelete = currentNode;
+                    startOfWordToDelete = element[i + 1];
+                }
+
+                previousNode = currentNode;
+            }
+            else
+            {
+                return false;
             }
         }
-        else
+
+        if (nodeFromWhereToDelete is null)
         {
-            return Tuple.Create(false, true);
+            throw new InvalidOperationException("Trie does not work correclty");
         }
 
-        if (wordWasHere && !finish)
-        {
-            root.Children.Remove(element[charNumber]);
-        }
-        if (!finish)
-        {
-            finish = root.Children.Count > 0;
-        }
-        return Tuple.Create(wordWasHere, finish);
+        nodeFromWhereToDelete.Children.Remove(startOfWordToDelete);
+
+        return true;
     }
 
     public int HowManyStartsWithPrefix(string prefix)
@@ -139,7 +144,7 @@ public class Bor : IDataStructure
         return PrefixRecursion(tempNode);
     }
 
-    private int PrefixRecursion(Node root)
+    private static int PrefixRecursion(Node root)
     {
         int answer = 0;
         var nodes = root.Children.Select(x => x.Value);
@@ -155,6 +160,5 @@ public class Bor : IDataStructure
     }
 
     public int Size;
-    private Node root;
-    private int globalWordCount;
+    private readonly Node root;
 }

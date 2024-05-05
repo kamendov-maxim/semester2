@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Data_Structure;
+using Data_Structures;
 
 class Program
 {
@@ -37,8 +37,8 @@ class Program
 
     public static void Main()
     {
-        Bor myBor = new Bor();
-        UserInput input = UserInput.checkWord;
+        var myBor = new Bor();
+        var input = UserInput.checkWord;
         while (input != UserInput.exitProgram)
         {
             PrintOptions();
@@ -49,7 +49,7 @@ class Program
                     {
                         Console.WriteLine("Введите строку");
                         string? str = Console.ReadLine();
-                        myBor.Add(str);
+                        myBor.Add(str!);
                         Console.WriteLine("Строка добавлена");
                         break;
                     }
@@ -58,7 +58,7 @@ class Program
                     {
                         Console.WriteLine("Введите строку");
                         string? str = Console.ReadLine();
-                        if (myBor.Contains(str))
+                        if (myBor.Contains(str!))
                         {
                             Console.WriteLine("Такая строка есть");
                         }
@@ -78,7 +78,7 @@ class Program
 
                         Console.WriteLine("Введите строку");
                         string? str = Console.ReadLine();
-                        myBor.Remove(str);
+                        myBor.Remove(str!);
                         Console.WriteLine("Строка удалена");
                         break;
                     }
@@ -86,7 +86,7 @@ class Program
                     {
                         Console.WriteLine("Введите префикс");
                         string? str = Console.ReadLine();
-                        Console.WriteLine($"Слов с таким префиксом: {myBor.HowManyStartsWithPrefix(str)}");
+                        Console.WriteLine($"Слов с таким префиксом: {myBor.HowManyStartsWithPrefix(str!)}");
                         break;
                     }
                 case UserInput.exitProgram:
