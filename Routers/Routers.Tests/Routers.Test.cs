@@ -22,17 +22,17 @@ public class Tests
     [TestCase("../../../TestFiles/TestInput1.txt", "../../../TestFiles/TestOutput.txt", "../../../TestFiles/ExpectedResult1.txt")]
     [TestCase("../../../TestFiles/TestInput2.txt", "../../../TestFiles/TestOutput.txt", "../../../TestFiles/ExpectedResult2.txt")]
     [TestCase("../../../TestFiles/TestInput3.txt", "../../../TestFiles/TestOutput.txt", "../../../TestFiles/ExpectedResult3.txt")]
-    public void AlgorithmTest(string inputFile, string outputFile, string excpectedFile)
+    public void AlgorithmTest(string inputFile, string outputFile, string expectedFile)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            inputFile.Replace('/', '\\');
-            outputFile.Replace('/', '\\');
-            excpectedFile.Replace('/', '\\');
+            inputFile = inputFile.Replace('/', '\\');
+            outputFile = outputFile.Replace('/', '\\');
+            expectedFile = expectedFile.Replace('/', '\\');
         }
 
         Configurator.Configure(inputFile, outputFile);
-        var expected = File.ReadAllBytes(excpectedFile);
+        var expected = File.ReadAllBytes(expectedFile);
         var result = File.ReadAllBytes(outputFile);
         Assert.That(result, Is.EqualTo(expected));
         File.WriteAllText(outputFile, string.Empty);
@@ -41,6 +41,10 @@ public class Tests
     [TestCase("../../../TestFiles/ExceptionTest.txt")]
     public void NetworkIsNotConnected(string inputFile)
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            inputFile = inputFile.Replace('/', '\\');
+        }
         Assert.Throws<NetworkIsNotConnectedException>(() => Configurator.Configure(inputFile, "a"));
     }
 }
