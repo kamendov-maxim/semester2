@@ -15,6 +15,13 @@ public class Tests
         Assert.That(stringArray, Is.EqualTo(expectedResult));
     }
 
+    public void TestBubbleSortOnListOfLIsts()
+    {
+        List<List<int>> expectedResult = [[1], [2, 2], [3, 3, 3, 3], [4, 4, 4, 4]];
+        Sorting.BubbleSort<List<int>>(listOfLists, Comparer<List<int>>.Create((List<int> a, List<int> b) => a.Count - b.Count));
+        Assert.That(listOfLists, Is.EqualTo(expectedResult));
+
+    }
 
     [Test]
     public void TestBubbleSortWithIntsAndDefaultComparer()
